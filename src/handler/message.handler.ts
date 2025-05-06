@@ -6,8 +6,7 @@ export const messagerHandler = async (ctx: any) => {
   const isGroup = ctx.chat.type.includes("group");
   const botUsername = ctx.botInfo.username;
   const replyToMessageId = ctx.message.reply_to_message?.message_id;
-  const replyToMessageFromId = ctx.message.reply_to_message?.from.id === ctx.from.id;
-
+  const replyToMessageFromId = ctx.message.reply_to_message?.from.id === ctx.botInfo.id;
 
   // 👇 Only reply in group if the bot is mentioned
   if (isGroup && !ctx.message.text.includes(`@${botUsername}`) && !replyToMessageId && !replyToMessageFromId) {
