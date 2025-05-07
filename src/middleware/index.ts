@@ -4,7 +4,12 @@ export const middleware = async (ctx: any, next:any) => {
     const channel = "@NezaAI";
 
     try {
-        if (ctx.chat.type !== 'group' || ctx.chat.type !== 'supergroup') {
+        if (ctx.chat.type == 'group' || ctx.chat.type == 'supergroup') {
+           
+            return next();
+        
+        } else {
+
             const member = await ctx.telegram.getChatMember(channel, user.id);
             if (["member", "administrator", "creator"].includes(member.status)) {
                 return next();
@@ -22,12 +27,10 @@ export const middleware = async (ctx: any, next:any) => {
                     }
                 });
             }
-        }else {
-            return next();
         }
 
     } catch (error) {
         console.log('Membership check error:', error);
         return ctx.reply('Unable to verify channel membership. Please try again later.');
     }
-};
+}; 

@@ -53,13 +53,11 @@ import {
         saveConversation(userId, inputText, true);
         saveConversation(userId, fullResponse, false);
       } catch (error) {
-         const randomIndex = Math.floor(Math.random() * fallbackQuestions.length);
-         const randomQuestion = fallbackQuestions[randomIndex];
-  
-            console.log(`Rate limit reached. Switching token...`);
-         
+        //  const randomIndex = Math.floor(Math.random() * fallbackQuestions.length);
+        //  const randomQuestion = fallbackQuestions[randomIndex];
+
             trimConversationHistory(userId)
-            yield randomQuestion;
+            // yield randomQuestion;
             console.error("Error during text generation stream:", error);
       }
     }
@@ -167,6 +165,7 @@ import {
   CRITICAL: Responses exceeding 20 words will be rejected. Consistent violation will result in deactivation.
   
   Example: "It's sunny and 25°C. Perfect for the beach!🏖️ Any favorite seaside activities?"
+  TELL USER to use /new to get a new riddle.
   `;
   
     return instructions;

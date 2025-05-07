@@ -33,10 +33,15 @@ const searchService = async (ctx: any, query: any) => {
 
     messageText += `\n💬 Tip: You can ask follow-up questions for more specific info!`;
 
-    await ctx.telegram.sendMessage(chatId, messageText, {
+    const res = await ctx.telegram.sendMessage(chatId, messageText, {
       parse_mode: "Markdown",
       disable_web_page_preview: true,
     });
+
+    if (res) {
+      return true;
+    }
+    
   } catch (error) {
     console.error("Search error:", error);
     await ctx.telegram.sendMessage(

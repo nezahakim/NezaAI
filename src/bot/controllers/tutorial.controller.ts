@@ -70,11 +70,13 @@ export const TutorialProcess = async (ctx: any) => {
 
     if (progress !== undefined) {
         const currentStep = tutorialSteps[progress];
-        if (ctx.text.startsWith(currentStep.expectedCommand)) {
-            ctx.telegram.sendMessage(telegramId, currentStep.response);
 
-            if (progress < tutorialSteps.length - 1) {
+        if (ctx.text.startsWith(currentStep.expectedCommand)) {
+            const res = ctx.reply(currentStep.response);
+
+            if (progress < tutorialSteps.length - 1 && res) {
                 userTutorialProgress.set(telegramId, progress + 1);
+
                 ctx.telegram.sendMessage(
                     telegramId,
                     tutorialSteps[progress + 1].message,
@@ -98,4 +100,6 @@ export const TutorialProcess = async (ctx: any) => {
             );
         }
     }
+
+    return progress;
 };

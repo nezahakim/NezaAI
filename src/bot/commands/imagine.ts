@@ -1,6 +1,6 @@
 import { fetchPexels } from "../controllers/imagine.controller";
 
-export const imagine = async (ctx: any) => {
+export const imagine = async (ctx: any, next: any) => {
   const text = ctx.message.text;
   const query = text.split(" ").slice(1).join(" ");
 
@@ -14,9 +14,13 @@ export const imagine = async (ctx: any) => {
     return ctx.reply("❌ No images found. Try another keyword.");
   }
 
-  await ctx.replyWithPhoto(imageUrl, {
+  const res = await ctx.replyWithPhoto(imageUrl, {
     caption: `🔍 Here's an image for: *${query}*`,
     parse_mode: "Markdown"
   });
+
+  if (res){
+    next();
+  }
   
 };

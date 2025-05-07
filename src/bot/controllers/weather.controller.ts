@@ -14,10 +14,15 @@ const weatherService = async (ctx:any, city: any) => {
     const iconUrl = `http:${data.current.condition.icon}`;
     const weatherDescription = generateWeatherDescription(data);
 
-    await ctx.replyWithPhoto({url: iconUrl}, {
+    const res = await ctx.replyWithPhoto({url: iconUrl}, {
       caption: weatherDescription,
       parse_mode: "Markdown",
     });
+
+    if(res){
+      return true;
+    }
+
   } catch (error: any) {
     console.error("Error fetching weather data:", error.message);
     await ctx.sendMessage(

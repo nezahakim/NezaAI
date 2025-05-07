@@ -82,14 +82,16 @@ class ReminderSystem {
           await bot.sendMessage(user.chatId, message);
           console.log(`Reminder sent to ${user.username}`);
 
-          this.users[userId].reminded = true;
+          if (this.users[userId]) {
+            this.users[userId].reminded = true;
+          }
         } catch (err) {
           console.error(`Failed to send message to ${user.username}`, err);
         }
       }
 
       // Reset reminder flag if user becomes active again
-      if (inactiveFor < twentyFourHours && user.reminded) {
+      if (inactiveFor < twentyFourHours && user.reminded && this.users[userId]) {
         this.users[userId].reminded = false;
       }
     }

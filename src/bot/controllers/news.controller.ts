@@ -119,22 +119,31 @@ export async function sendNewsUpdate(ctx: any, newsData: any) {
     };
 
     if (newsData.mediaType === 'photo' && newsData.mediaUrl) {
-      await ctx.telegram.sendPhoto(chatId, newsData.mediaUrl, {
+      const res = await ctx.telegram.sendPhoto(chatId, newsData.mediaUrl, {
         caption,
         parse_mode: 'Markdown',
         reply_markup: inlineKeyboard
       });
+      if (res) {
+        return true;
+      }
     } else if (newsData.mediaType === 'video' && newsData.mediaUrl) {
-      await ctx.telegram.sendVideo(chatId, newsData.mediaUrl, {
+      const res = await ctx.telegram.sendVideo(chatId, newsData.mediaUrl, {
         caption,
         parse_mode: 'Markdown',
         reply_markup: inlineKeyboard
       });
+      if (res) {
+        return true;
+      }
     } else {
-      await ctx.telegram.sendMessage(chatId, caption, {
+      const res = await ctx.telegram.sendMessage(chatId, caption, {
         parse_mode: 'Markdown',
         reply_markup: inlineKeyboard
       });
+      if (res) {
+        return true;
+      }
     }
 
     console.log(`✅ Sent news from ${newsData.source}`);
