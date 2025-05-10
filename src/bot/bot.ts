@@ -55,9 +55,10 @@ bot.on("text", middleware, trackRiddleActivity, riddleAnswerHandler, async (ctx:
   await reminder.updateUser(userId, chatId, username);
 });
 
+import Context from "telegraf";
 
 setInterval(async () => {
-  await reminder.checkAndNotifyInactiveUsers(bot);
+  await reminder.checkAndNotifyInactiveUsers(Context);
 }, 60 * 60 * 1000);
 
 bot.action("tutorial", (ctx: any) => tutorial(ctx));

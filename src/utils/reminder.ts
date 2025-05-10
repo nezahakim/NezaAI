@@ -60,7 +60,7 @@ class ReminderSystem {
   }
 
   // Check for inactive users and send reminders
-  async checkAndNotifyInactiveUsers(bot: any) {
+  async checkAndNotifyInactiveUsers(ctx: any) {
     const now = Date.now();
     const twentyFourHours = 24 * 60 * 60 * 1000;
 
@@ -79,7 +79,7 @@ class ReminderSystem {
         const message = messages[Math.floor(Math.random() * messages.length)].replace('{username}', `@${user.username}`);
 
         try {
-          await bot.sendMessage(user.chatId, message);
+          await ctx.telegram.sendMessage(user.chatId, message);
           console.log(`Reminder sent to ${user.username}`);
 
           if (this.users[userId]) {
