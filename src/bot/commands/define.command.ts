@@ -22,14 +22,14 @@ export const define = async(ctx: any) => {
 
         if (remaining) {
           // Send the rest of the definition as a follow-up message
-          await ctx.replyWithMarkdownV2(remaining);
+          await ctx.reply(remaining, { parse_mode: 'Markdown' });
         }
       } else {
         // No audio, send everything as text
-        await ctx.replyWithMarkdownV2(text);
+        await ctx.reply(text, { parse_mode: 'Markdown' });
       }
     } catch (error: any) {
-        console.log(error.message)
+        console.log(error)
       return ctx.reply(`❌ Sorry we can't process it now, try again later!`);
     }
 }
