@@ -165,7 +165,7 @@ import {
   CRITICAL: Responses exceeding 20 words will be rejected. Consistent violation will result in deactivation.
   
   Example: "It's sunny and 25°C. Perfect for the beach!🏖️ Any favorite seaside activities?"
-  TELL USER to use /new to get a new riddle.
+  TELL USER to use /riddle to get a new riddle.
   `;
   
     return instructions;

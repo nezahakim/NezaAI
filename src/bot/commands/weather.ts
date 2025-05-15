@@ -1,3 +1,4 @@
+import { isTutorialInProgress } from "../controllers/tutorial.controller"
 import weatherService from "../controllers/weather.controller"
 
 export const weather = async (ctx: any, next: any)=>{
@@ -6,7 +7,7 @@ export const weather = async (ctx: any, next: any)=>{
 
     if(city.length > 0) {
         const res = await weatherService(ctx, city)
-        if(res){
+        if(res && isTutorialInProgress(ctx)){
             next();
         }
     }else{

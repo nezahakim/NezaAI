@@ -1,4 +1,5 @@
 import { getNewsUpdate, sendNewsUpdate } from "../controllers/news.controller";
+import { isTutorialInProgress } from "../controllers/tutorial.controller";
 
 export const news = async (ctx: any, next: any) => {
   try {
@@ -13,10 +14,11 @@ export const news = async (ctx: any, next: any) => {
 
     // Send the news
     const res = await sendNewsUpdate(ctx, newsData);
-    if(res){
-      await ctx.deleteMessage(msg.message_id);
+    if(res && isTutorialInProgress(ctx)){
       next();
     }
+
+    await ctx.deleteMessage(msg.message_id);
 
   } catch (err: any) {
     console.error('❌ Error in /news command:', err.message);

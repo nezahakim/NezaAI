@@ -36,6 +36,13 @@ Command /imagine is used to create AI images, you begin with /imagine and then f
         response:
             "Awesome! You now know how to stay updated with the latest news. Let's check out your rewards next!",
     },
+    {
+        message:
+            `4. *Stay Cheerfull with NezaAI! 📰*\n\nThe /riddle command brings you the riddles to solve and enjoy. Simply type /riddle\n*Example:* Type: \`/riddle \` to see a riddle to solve.`,
+        expectedCommand: "/news",
+        response:
+            "Awesome! You now know how to start a riddle. Let's check out your rewards next!",
+    },
 ] as any;
 
 export const userTutorialProgress = new Map();
@@ -72,7 +79,7 @@ export const TutorialProcess = async (ctx: any) => {
         const currentStep = tutorialSteps[progress];
 
         if (ctx.text.startsWith(currentStep.expectedCommand)) {
-            const res = ctx.reply(currentStep.response);
+            const res = await ctx.reply(currentStep.response);
 
             if (progress < tutorialSteps.length - 1 && res) {
                 userTutorialProgress.set(telegramId, progress + 1);
@@ -85,7 +92,7 @@ export const TutorialProcess = async (ctx: any) => {
             } else {
                 userTutorialProgress.delete(telegramId);
                 
-                ctx.telegram.sendMessage(
+                await ctx.telegram.sendMessage(
                     telegramId,
                     "Tutorial completed! Enjoy using NezaAI!",
                 );
@@ -103,3 +110,15 @@ export const TutorialProcess = async (ctx: any) => {
 
     return progress;
 };
+
+
+export const isTutorialInProgress = (ctx: any) =>{
+    const telegramId = ctx.from.id.toString();
+    const progress = userTutorialProgress.get(telegramId);
+    
+    if (progress !== undefined) {
+        return true;
+    }else{
+        return false;
+    }
+}

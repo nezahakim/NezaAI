@@ -1,4 +1,5 @@
 import searchService from "../controllers/search.controller"
+import { isTutorialInProgress } from "../controllers/tutorial.controller"
 
 
 export const search = async (ctx: any, next:any) =>{
@@ -7,7 +8,8 @@ export const search = async (ctx: any, next:any) =>{
 
     if(query.length > 0){
         const res = await searchService(ctx, query)
-        if(res){
+        
+        if(res && isTutorialInProgress(ctx)){
             next();
         }
     }else{

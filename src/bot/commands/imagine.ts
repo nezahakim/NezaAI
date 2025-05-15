@@ -1,4 +1,5 @@
 import { fetchPexels } from "../controllers/imagine.controller";
+import { isTutorialInProgress } from "../controllers/tutorial.controller";
 
 export const imagine = async (ctx: any, next: any) => {
   const text = ctx.message.text;
@@ -19,7 +20,7 @@ export const imagine = async (ctx: any, next: any) => {
     parse_mode: "Markdown"
   });
 
-  if (res){
+  if (res && isTutorialInProgress(ctx)){
     next();
   }
   

@@ -1,4 +1,3 @@
-// commands/riddle.ts
 import { 
   sendRiddle, 
   showLeaderboard, 
@@ -67,15 +66,8 @@ export const riddleHelp = async (ctx: any) => {
 
 // Register all riddle-related callbacks
 export const registerRiddleCallbacks = (bot: any) => {
-  // Game join button
   bot.action(/join_game:.+/, handleRiddleCallbacks);
-  
-  // Hint button
   bot.action(/hint_game:.+/, handleRiddleCallbacks);
-  
-  // End game button
   bot.action(/end_game:.+/, handleRiddleCallbacks);
-  
-  // Leaderboard refresh
   bot.action('show_leaderboard', handleRiddleCallbacks);
 };
