@@ -6,7 +6,6 @@ type User = {
   username: string;
   chatId: number | string;
   lastActive: number;
-  reminded?: boolean;
 };
 
 class ReminderSystem {
@@ -17,10 +16,10 @@ class ReminderSystem {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     this.storageFile = path.join(__dirname, storageFile);
-    this.users = {} ;
+    this.users = {};
   }
 
-  // Load user data
+  // Load users from file
   async loadUsers() {
     try {
       const data = await fs.readFile(this.storageFile, 'utf8');
@@ -33,7 +32,7 @@ class ReminderSystem {
     }
   }
 
-  // Save user data
+  // Save current user data
   async saveUsers() {
     try {
       await fs.writeFile(this.storageFile, JSON.stringify(this.users, null, 2));
@@ -42,24 +41,19 @@ class ReminderSystem {
     }
   }
 
-  // Add or update a user's activity
+  // Add/update user only if they have a valid username
   async updateUser(userId: string, chatId: string | number, username: string) {
+    if (!username || username.trim() === '') return;
+
     this.users[userId] = {
       username,
       chatId,
-      lastActive: Date.now(),
-      reminded: false
+      lastActive: Date.now()
     };
     await this.saveUsers();
   }
 
-  // Remove a user completely
-  async removeUser(userId: string) {
-    delete this.users[userId];
-    await this.saveUsers();
-  }
-
-  // Check for inactive users and send reminders
+  // Check for inactive users and notify then delete
   async checkAndNotifyInactiveUsers(telegram: any) {
     const now = Date.now();
     const twentyFourHours = 24 * 60 * 60 * 1000;
@@ -72,31 +66,36 @@ class ReminderSystem {
       "🎯 Ready to continue your goals, {username}? I'm here to support you!"
     ] as any;
 
+    let changed = false;
+
     for (const [userId, user] of Object.entries(this.users)) {
       const inactiveFor = now - user.lastActive;
 
-      if (inactiveFor >= twentyFourHours && !user.reminded) {
-        const message = messages[Math.floor(Math.random() * messages.length)].replace('{username}', `@${user.username}`);
+      if (inactiveFor >= twentyFourHours) {
+        if (!user.username || user.username.trim() === '') {
+          delete this.users[userId];
+          changed = true;
+          continue;
+        }
+
+        const message = messages[Math.floor(Math.random() * messages.length)]
+          .replace('{username}', `@${user.username}`);
 
         try {
           await telegram.sendMessage(user.chatId, message);
-          console.log(`Reminder sent to ${user.username}`);
-
-          if (this.users[userId]) {
-            this.users[userId].reminded = true;
-          }
+          console.log(`✅ Reminder sent to @${user.username}`);
         } catch (err) {
-          console.error(`Failed to send message to ${user.username}`, err);
+          console.error(`❌ Failed to send reminder to @${user.username}`, err);
         }
-      }
 
-      // Reset reminder flag if user becomes active again
-      if (inactiveFor < twentyFourHours && user.reminded && this.users[userId]) {
-        this.users[userId].reminded = false;
+        delete this.users[userId]; // Remove user immediately after reminding
+        changed = true;
       }
     }
 
-    await this.saveUsers();
+    if (changed) {
+      await this.saveUsers();
+    }
   }
 }
 
